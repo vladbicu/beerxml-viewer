@@ -1,4 +1,5 @@
 import { useRef, useState } from 'react'
+import { Mark } from './Mark'
 
 interface UploadZoneProps {
   onFile: (file: File) => void
@@ -18,17 +19,8 @@ export function UploadZone({ onFile, errors }: UploadZoneProps) {
 
   return (
     <div className="mx-auto flex min-h-screen max-w-[900px] flex-col justify-center px-6 py-16">
-      <p className="eyebrow mb-4">BeerXML Viewer</p>
-      <h1 className="font-display mb-3 text-[clamp(2.5rem,6vw,4.5rem)] leading-[1.05] font-semibold">
-        Fișa de rețetă,
-        <br />
-        pe ecran mare.
-      </h1>
-      <p className="text-cream-dim mb-10 max-w-[36ch] text-[1.15rem]">
-        Încarcă un export BeerXML din Grainfather, Brewfather sau BeerSmith. Totul rămâne în browser
-        — nimic nu se trimite nicăieri.
-      </p>
-
+      {/* The empty kettle: the same mark, unfilled and dimmed to the faint
+          tier. No arrow — the level line already points at the horizontal. */}
       <button
         type="button"
         onClick={() => inputRef.current?.click()}
@@ -38,13 +30,26 @@ export function UploadZone({ onFile, errors }: UploadZoneProps) {
         }}
         onDragLeave={() => setDragging(false)}
         onDrop={handleDrop}
-        className={`panel flex w-full cursor-pointer flex-col items-center gap-3 px-8 py-16 text-center transition-colors ${
-          dragging ? 'border-copper-bright bg-oak-high' : ''
+        className={`bg-oak border-line flex w-full cursor-pointer flex-col items-center gap-11 rounded border px-8 py-24 text-center transition-colors ${
+          dragging ? 'border-copper-bright bg-oak-raised' : ''
         }`}
       >
-        <span className="text-copper-bright text-[2.5rem] leading-none">↓</span>
-        <span className="text-[1.3rem] font-semibold">Trage fișierul aici</span>
-        <span className="text-cream-dim text-[1rem]">sau apasă pentru a-l alege</span>
+        <span className="h-[132px] w-[132px] opacity-55">
+          <Mark ink={dragging ? 'var(--copper-bright)' : 'var(--cream-faint)'} fill="none" />
+        </span>
+
+        <span className="flex flex-col items-center gap-3">
+          <span className="display-title text-[clamp(2rem,4vw,2.75rem)] leading-tight">
+            Cazanul e gol
+          </span>
+          <span className="text-cream-dim text-[1.15rem]">Trage un fișier BeerXML aici</span>
+        </span>
+
+        <span className="bg-line-strong h-px w-[180px]" />
+
+        <span className="num text-cream-faint text-[0.85rem] tracking-[0.1em] uppercase">
+          .xml · Grainfather · Brewfather · BeerSmith
+        </span>
       </button>
 
       <input
@@ -59,6 +64,10 @@ export function UploadZone({ onFile, errors }: UploadZoneProps) {
           e.target.value = ''
         }}
       />
+
+      <p className="text-cream-faint mt-8 text-center text-[0.95rem]">
+        Totul rămâne în browser — nimic nu se trimite nicăieri.
+      </p>
 
       {errors.length > 0 && (
         <div

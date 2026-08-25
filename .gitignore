@@ -12,6 +12,9 @@ dist
 dist-ssr
 *.local
 
+# Design source material (claude.ai/design pitch and imports)
+reference
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

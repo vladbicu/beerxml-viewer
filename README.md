@@ -1,8 +1,11 @@
-# BeerXML Viewer
+# Cazan
 
 Încarci un export BeerXML (Grainfather, Brewfather, BeerSmith) și îl vezi ca o
 fișă de rețetă cu tipografie mare, gândită pentru un monitor secundar sau un TV
 în berărie, citită de la 2-3 metri.
+
+Numele vine de la cazanul de fierbere — vasul de cupru din mijlocul oricărei
+zile de brew, și sursa culorii de accent a interfeței.
 
 Totul rulează client-side: fără backend, fără bază de date, fără upload. Nimic
 nu persistă după refresh — intenționat, e un viewer pentru ziua de brew, nu o

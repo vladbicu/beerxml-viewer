@@ -1,4 +1,5 @@
 import { formatDuration, formatGravity, formatNumber } from '../lib/format'
+import { Mark } from './Mark'
 import { srmToRgb } from '../lib/srm'
 import type { Recipe } from '../lib/types'
 import { FermentablesSection } from './FermentablesSection'
@@ -67,7 +68,15 @@ export function RecipeTicket({ recipe, onReset, position }: RecipeTicketProps) {
   return (
     <div className="mx-auto max-w-[1200px] px-4 py-8 sm:px-8 sm:py-12">
       <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
-        <p className="eyebrow">BeerXML Viewer</p>
+        {/* Horizontal lockup. The wordmark steps down to Public Sans caps
+            because the recipe title below is already a Fraunces title, and
+            never two serif titles in one view. */}
+        <div className="flex items-center gap-3">
+          <span className="h-9 w-9">
+            <Mark ink="var(--cream)" fill="var(--copper)" />
+          </span>
+          <span className="wordmark text-[1.05rem]">Cazan</span>
+        </div>
         <div className="flex items-center gap-3">
           {position && (
             <>
@@ -94,12 +103,23 @@ export function RecipeTicket({ recipe, onReset, position }: RecipeTicketProps) {
       </div>
 
       <article className="bg-oak flex overflow-hidden rounded-md">
-        {/* Vertical band carrying the beer's actual SRM colour. */}
-        <div className="w-3 shrink-0 sm:w-5" style={{ backgroundColor: beerColor }} />
+        {/* Vertical band carrying the beer's actual SRM colour. On light the
+            well behind it turns dark, because a pale beer laid straight onto
+            paper dissolves into the card; on dark it is transparent and the
+            stripe meets the card edge exactly as before. */}
+        <div
+          className="w-3 shrink-0 sm:w-5"
+          style={{ backgroundColor: 'var(--stripe-well)', padding: 'var(--stripe-well-pad)' }}
+        >
+          <div
+            className="h-full w-full"
+            style={{ backgroundColor: beerColor, borderRadius: 'var(--stripe-radius)' }}
+          />
+        </div>
 
         <div className="min-w-0 flex-1">
           <header className="px-7 py-9 sm:px-10 sm:py-11">
-            <h1 className="font-display text-[clamp(2.5rem,5.5vw,4.5rem)] leading-[1.05] font-semibold">
+            <h1 className="display-title text-[clamp(2.5rem,5.5vw,4.5rem)] leading-[1.05]">
               {recipe.name}
             </h1>
             {subtitle(recipe) && (

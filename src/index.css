@@ -1,27 +1,76 @@
 @import 'tailwindcss';
 
 :root {
-  /* Surfaces — warm near-black, burnt oak rather than neutral grey */
+  /* Surfaces — warm near-black, burnt oak rather than neutral grey.
+     The four oaks sit in a narrow band, and a TV in its default picture mode
+     crushes shadows; --oak-high is widened so the top step survives. */
   --oak-deep: #0d0907;
   --oak: #14100b;
   --oak-raised: #1e1810;
-  --oak-high: #2a2118;
+  --oak-high: #332819;
 
-  /* Ink */
+  /* Ink. --cream-faint carries labels and captions — the smallest, most
+     distant copy — so it sits at 4.5:1 rather than the 3.3:1 it used to. */
   --cream: #f5ede1;
   --cream-dim: #a2937e;
-  --cream-faint: #6d6153;
+  --cream-faint: #877869;
 
-  /* Accent */
+  /* Accent. One hue, two jobs: copper draws, copper-bright speaks.
+     #c9793a holds 5.9:1 — fine for shapes of 3px and up, but a TV's contrast
+     processing eats it as a hairline or as small type, so every numeral,
+     small emphasis and 1px rule uses --copper-bright at 9.0:1. */
   --copper: #c9793a;
   --copper-bright: #e2a262;
 
   --line: rgba(214, 178, 130, 0.14);
   --line-strong: rgba(214, 178, 130, 0.28);
 
+  /* On oak the SRM stripe needs no well — it meets the card edge directly. */
+  --stripe-well: transparent;
+  --stripe-well-pad: 0px;
+  --stripe-radius: 0px;
+
   /* Read from 2-3 m away: the whole scale is anchored well above the 16px web
      default, since this is viewed from a couch, not a laptop. */
   --text-base: 20px;
+}
+
+/**
+ * Light theme — built forward from paper, not inverted from oak. The warmth in
+ * the oaks lives in their shadows, and shadows do not survive a flip.
+ *
+ * The light values are deliberately mapped onto the same tokens rather than
+ * introducing a parallel set, because their roles mirror: elevation inverts on
+ * its own (the ticket becomes the brightest surface, panels sink below the
+ * page), and the accent's speaking job passes from --copper-bright to
+ * --copper-ink #9e5419, since #c9793a only reaches 3.0:1 on paper.
+ *
+ * Not exercised across every section — dark is the tested, intended default,
+ * and this is for a second monitor or a sunlit garage, never the TV.
+ */
+@media (prefers-color-scheme: light) {
+  :root {
+    --oak-deep: #f5eee2; /* --paper: page */
+    --oak: #fbf6ec; /* --paper-raised: the ticket, brightest thing on screen */
+    --oak-raised: #e7dcc8; /* --paper-sunk: panels sink below the page */
+    --oak-high: #ddd0ba; /* --paper-rule */
+
+    --cream: #191309; /* --ink: burnt oak, not black */
+    --cream-dim: #5f5346; /* --ink-dim: 6.6:1, matches cream-dim exactly */
+    --cream-faint: #786a5b; /* --ink-faint: 4.7:1, already at the floor */
+
+    --copper: #c9793a; /* draws only — never text on paper */
+    --copper-bright: #9e5419; /* --copper-ink: the speaking accent on light */
+
+    --line: rgba(93, 76, 48, 0.22);
+    --line-strong: rgba(93, 76, 48, 0.38);
+
+    /* Pale beers dissolve straight onto paper, so the stripe gets seated in an
+       oak well and every SRM value from 1 to 40 reads true again. */
+    --stripe-well: #14100b;
+    --stripe-well-pad: 3px;
+    --stripe-radius: 1px;
+  }
 }
 
 @theme inline {
@@ -91,18 +140,39 @@ body {
 
   .section-title {
     font-family: var(--font-display);
+    font-variation-settings: 'SOFT' 0, 'WONK' 1;
     font-size: clamp(1.6rem, 2.2vw, 2.1rem);
     font-weight: 600;
     letter-spacing: -0.01em;
     color: var(--cream);
   }
 
+  /* Fraunces with the identity's variation settings, for recipe titles. */
+  .display-title {
+    font-family: var(--font-display);
+    font-variation-settings: 'SOFT' 0, 'WONK' 1, 'opsz' 144;
+    font-weight: 600;
+    letter-spacing: -0.025em;
+    color: var(--cream);
+  }
+
+  /* Small uppercase type, so it speaks rather than draws: copper-bright. */
   .eyebrow {
     font-size: 0.8rem;
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.2em;
-    color: var(--copper);
+    color: var(--copper-bright);
+  }
+
+  /* Public Sans caps with wide tracking, not the serif — the display face is
+     reserved for the recipe title, and never two serif titles in one view. */
+  .wordmark {
+    font-family: var(--font-sans);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.32em;
+    color: var(--cream);
   }
 
   /* Tables stay large: a grain bill read at a glance from across the brewery. */
