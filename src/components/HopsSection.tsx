@@ -1,66 +1,66 @@
 import { formatDuration, formatMass, formatNumber } from '../lib/format'
+import { groupInOrder } from '../lib/group'
 import type { Hop } from '../lib/types'
 import { Section } from './Section'
 
-/** Only these land on the boil timeline; everything else is grouped below it. */
-const TIMELINE_USES = new Set(['boil', 'first wort'])
+/** Additions that happen during the boil, grouped by the minute they go in. */
+const BOIL_USES = new Set(['boil', 'first wort'])
 
-function alpha(hop: Hop): string {
-  return hop.alpha !== null ? `${formatNumber(hop.alpha)}% AA` : ''
+function hopMeta(hop: Hop): string {
+  return [
+    hop.form,
+    hop.alpha !== null ? `${formatNumber(hop.alpha)}% AA` : '',
+    // Only worth naming when it differs from the group it sits in.
+    hop.use.toLowerCase() === 'first wort' ? hop.use : '',
+  ]
+    .filter(Boolean)
+    .join(' · ')
 }
 
-function HopCard({ hop }: { hop: Hop }) {
-  const meta = [hop.form, alpha(hop)].filter(Boolean).join(' · ')
-  return (
-    <div className="panel px-5 py-4">
-      <div className="flex items-baseline justify-between gap-4">
-        <span className="text-[1.15rem] font-semibold">{hop.name}</span>
-        <span className="num text-copper-bright text-[1.15rem]">{formatMass(hop.amount)}</span>
-      </div>
-      {meta && <p className="text-cream-faint mt-1 text-[0.9rem]">{meta}</p>}
-    </div>
-  )
+interface HopGroupProps {
+  title: string
+  /** Timing or temperature shared by the whole group. */
+  detail?: string
+  /** Boil groups are titled by a duration, so they get the figure treatment. */
+  mono?: boolean
+  hops: Hop[]
 }
 
-function BoilTimeline({ hops, boilTime }: { hops: Hop[]; boilTime: number }) {
+/**
+ * One block per moment of addition. Every hop that goes in at the same time
+ * lives in the same block, which is what makes this immune to the collisions
+ * the old horizontal timeline had when two additions shared a minute.
+ */
+function HopGroup({ title, detail, mono, hops }: HopGroupProps) {
   return (
-    <div className="overflow-x-auto pb-2">
-      <div className="relative min-w-[560px] pt-16 pb-12">
-        <div className="bg-line-strong relative h-[3px] w-full">
-          {hops.map((hop, i) => {
-            // Boil runs left (start) to right (flameout), so a 60-minute
-            // addition sits at 0% and a flameout addition at 100%.
-            const time = hop.time ?? 0
-            const position = boilTime > 0 ? (1 - Math.min(time, boilTime) / boilTime) * 100 : 100
-            // Alternate sides so neighbouring additions don't overprint.
-            const above = i % 2 === 0
-
-            return (
-              <div
-                key={`${hop.name}-${i}`}
-                className="absolute top-1/2 -translate-x-1/2 -translate-y-1/2"
-                style={{ left: `${position}%` }}
-              >
-                <span className="bg-copper-bright border-oak-raised block h-4 w-4 rounded-full border-2" />
-                <div
-                  className={`absolute left-1/2 w-[11rem] -translate-x-1/2 text-center ${
-                    above ? 'bottom-full mb-4' : 'top-full mt-4'
-                  }`}
-                >
-                  <p className="text-[1.05rem] leading-tight font-semibold">{hop.name}</p>
-                  <p className="num text-copper-bright text-[1rem]">{formatMass(hop.amount)}</p>
-                  <p className="num text-cream-faint text-[0.9rem]">{formatDuration(hop.time)}</p>
-                </div>
-              </div>
-            )
-          })}
-        </div>
-
-        <div className="num text-cream-faint mt-3 flex justify-between text-[0.85rem]">
-          <span>început fierbere · {formatDuration(boilTime)}</span>
-          <span>flameout · 0 min</span>
-        </div>
+    <div className="panel flex flex-col px-6 py-5">
+      <div className="border-line flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 border-b pb-4">
+        <span
+          className={
+            mono
+              ? 'num text-copper-bright text-[1.75rem] leading-none'
+              : 'text-[1.35rem] leading-none font-semibold'
+          }
+        >
+          {title}
+        </span>
+        {detail && <span className="num text-cream-faint text-[0.95rem]">{detail}</span>}
       </div>
+
+      <ul className="mt-4 flex flex-col gap-4">
+        {hops.map((hop, i) => {
+          const meta = hopMeta(hop)
+          return (
+            <li key={`${hop.name}-${i}`} className="flex items-baseline justify-between gap-5">
+              <span className="min-w-0">
+                <span className="block text-[1.15rem] leading-tight font-semibold">{hop.name}</span>
+                {meta && <span className="text-cream-faint block text-[0.9rem]">{meta}</span>}
+              </span>
+              <span className="num shrink-0 text-[1.2rem]">{formatMass(hop.amount)}</span>
+            </li>
+          )
+        })}
+      </ul>
     </div>
   )
 }
@@ -68,52 +68,57 @@ function BoilTimeline({ hops, boilTime }: { hops: Hop[]; boilTime: number }) {
 export function HopsSection({ hops, boilTime }: { hops: Hop[]; boilTime: number | null }) {
   if (hops.length === 0) return null
 
-  const onTimeline = hops.filter((h) => TIMELINE_USES.has(h.use.toLowerCase()))
-  const rest = hops.filter((h) => !TIMELINE_USES.has(h.use.toLowerCase()))
+  const inBoil = hops.filter((h) => BOIL_USES.has(h.use.toLowerCase()))
+  const rest = hops.filter((h) => !BOIL_USES.has(h.use.toLowerCase()))
 
-  // Group the off-timeline additions by their raw USE string, preserving file
-  // order so "Hop Stand" stays ahead of "Dry Hop" the way the brewer wrote it.
-  const groups = new Map<string, Hop[]>()
-  for (const hop of rest) {
-    const key = hop.use || 'Alte adaosuri'
-    const existing = groups.get(key)
-    if (existing) existing.push(hop)
-    else groups.set(key, [hop])
-  }
+  // Boil additions read as a countdown: the 60-minute charge first, flameout
+  // last. Anything without a time sorts to the end rather than jumping ahead.
+  const boilGroups = groupInOrder(inBoil, (h) => String(h.time ?? 0)).sort(
+    (a, b) => Number(b[0]) - Number(a[0]),
+  )
 
+  const restGroups = groupInOrder(rest, (h) => h.use || 'Alte adaosuri')
   const total = hops.reduce((sum, h) => sum + h.amount, 0)
 
   return (
     <Section title="Hamei" aside={`${formatMass(total)} total`}>
-      {onTimeline.length > 0 && boilTime !== null && boilTime > 0 && (
-        <BoilTimeline hops={onTimeline} boilTime={boilTime} />
+      {boilGroups.length > 0 && (
+        <div className="mb-9">
+          <div className="mb-3 flex flex-wrap items-baseline justify-between gap-x-4">
+            <h3 className="eyebrow">Fierbere</h3>
+            {boilTime !== null && boilTime > 0 && (
+              <span className="num text-cream-faint text-[0.95rem]">
+                {formatDuration(boilTime)} total
+              </span>
+            )}
+          </div>
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {boilGroups.map(([time, groupHops]) => (
+              <HopGroup key={time} title={formatDuration(Number(time))} mono hops={groupHops} />
+            ))}
+          </div>
+        </div>
       )}
 
-      {[...groups.entries()].map(([use, groupHops]) => {
-        // Hop stands share one temperature across the group; show it once.
-        const temp = groupHops.find((h) => h.temperature !== null)?.temperature ?? null
-        const time = groupHops[0]?.time ?? null
-        const detail = [
-          temp !== null ? `${formatNumber(temp)} °C` : '',
-          formatDuration(time),
-        ]
-          .filter(Boolean)
-          .join(' · ')
+      {restGroups.length > 0 && (
+        <div>
+          <h3 className="eyebrow mb-3">După fierbere</h3>
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {restGroups.map(([use, groupHops]) => {
+              // A hop stand shares one temperature and time across the group.
+              const temp = groupHops.find((h) => h.temperature !== null)?.temperature ?? null
+              const detail = [
+                temp !== null ? `${formatNumber(temp)} °C` : '',
+                formatDuration(groupHops[0]?.time ?? null),
+              ]
+                .filter(Boolean)
+                .join(' · ')
 
-        return (
-          <div key={use} className="mt-8">
-            <div className="mb-3 flex flex-wrap items-baseline justify-between gap-x-4">
-              <h3 className="eyebrow">{use}</h3>
-              {detail && <span className="num text-cream-faint text-[0.95rem]">{detail}</span>}
-            </div>
-            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-              {groupHops.map((hop, i) => (
-                <HopCard key={`${hop.name}-${i}`} hop={hop} />
-              ))}
-            </div>
+              return <HopGroup key={use} title={use} detail={detail} hops={groupHops} />
+            })}
           </div>
-        )
-      })}
+        </div>
+      )}
     </Section>
   )
 }

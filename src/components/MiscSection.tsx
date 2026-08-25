@@ -1,4 +1,5 @@
 import { formatDuration } from '../lib/format'
+import { groupInOrder } from '../lib/group'
 import type { Misc } from '../lib/types'
 import { Section } from './Section'
 
@@ -7,18 +8,12 @@ export function MiscSection({ miscs }: { miscs: Misc[] }) {
 
   // Grouped by USE because a boil addition and a secondary addition happen days
   // apart — listing them together would be misleading on brew day.
-  const groups = new Map<string, Misc[]>()
-  for (const misc of miscs) {
-    const key = misc.use || 'Alte adaosuri'
-    const existing = groups.get(key)
-    if (existing) existing.push(misc)
-    else groups.set(key, [misc])
-  }
+  const groups = groupInOrder(miscs, (misc) => misc.use || 'Alte adaosuri')
 
   return (
     <Section title="Adaosuri">
       <div className="space-y-8">
-        {[...groups.entries()].map(([use, groupMiscs]) => (
+        {groups.map(([use, groupMiscs]) => (
           <div key={use}>
             <h3 className="eyebrow mb-3">{use}</h3>
             <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
