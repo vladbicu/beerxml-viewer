@@ -1,0 +1,90 @@
+import { readFileSync } from 'node:fs'
+import { fileURLToPath } from 'node:url'
+import { createElement } from 'react'
+import { renderToStaticMarkup } from 'react-dom/server'
+import { expect, it } from 'vitest'
+import { CondensedTicket } from './components/CondensedTicket'
+import { RecipeTicket } from './components/RecipeTicket'
+import { parseBeerXML } from './lib/parseBeerXML'
+import type { Hop, Recipe } from './lib/types'
+
+const fixture = parseBeerXML(
+  readFileSync(
+    fileURLToPath(new URL('../fixtures/Grainfather_Rose_IPA.xml', import.meta.url)),
+    'latin1',
+  ),
+).recipes[0]!
+
+const hop = (name: string, amount: number, use: string, time: number, temperature: number | null = null): Hop => ({
+  name,
+  alpha: 12,
+  amount,
+  use,
+  time,
+  form: 'Pellet',
+  temperature,
+})
+
+// A NEIPA-shaped bill: boil charges, a whirlpool, and TWO dry hop charges on
+// different days — the case that used to collapse into one block.
+const hopHeavy: Recipe = {
+  ...fixture,
+  name: 'NEIPA test',
+  hops: [
+    hop('Magnum', 0.02, 'Boil', 60),
+    hop('Citra', 0.03, 'Boil', 10),
+    hop('Nelson', 0.05, 'Hop Stand', 20, 85),
+    hop('Galaxy', 0.06, 'Dry Hop', 4320),
+    hop('Mosaic', 0.04, 'Dry Hop', 10080),
+  ],
+}
+
+const props = {
+  onReset: () => {},
+  position: null,
+  theme: 'dark' as const,
+  onToggleTheme: () => {},
+  view: 'condensed' as const,
+  onToggleView: () => {},
+}
+
+const render = (recipe: Recipe, condensed: boolean) =>
+  renderToStaticMarkup(
+    createElement(condensed ? CondensedTicket : RecipeTicket, { ...props, recipe }),
+  )
+
+const strip = (h: string) => h.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim()
+
+it('condensed keeps every piece of recipe data', () => {
+  const text = strip(render(fixture, true))
+
+  for (const f of fixture.fermentables) expect(text).toContain(f.name)
+  for (const h of fixture.hops) expect(text).toContain(h.name)
+  for (const y of fixture.yeasts) expect(text).toContain(y.name)
+  for (const m of fixture.miscs) expect(text).toContain(m.name)
+  // Readings, mash, and the metadata line all survive.
+  expect(text).toContain('1.036')
+  expect(text).toContain('65 °C')
+  expect(text).toContain('Tinseth')
+  expect(text).toContain('Specialty IPA · 21B · BJCP')
+})
+
+it('condensed cannot scroll', () => {
+  const html = render(fixture, true)
+  expect(html).toContain('overflow-hidden')
+  expect(html).not.toContain('overflow-auto')
+  expect(html).not.toContain('overflow-x-auto')
+  expect(html).not.toContain('overflow-y-auto')
+})
+
+it('two dry hop charges stay separate blocks in both views', () => {
+  for (const condensed of [true, false]) {
+    const text = strip(render(hopHeavy, condensed))
+    expect(text).toContain('Galaxy')
+    expect(text).toContain('Mosaic')
+    // 3 days and 7 days must both be named, not just the first charge's timing.
+    expect(text).toContain('3 zile')
+    expect(text).toContain('7 zile')
+    expect(text).toContain('85 °C')
+  }
+})

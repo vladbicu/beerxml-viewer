@@ -1,9 +1,11 @@
 import { useState } from 'react'
+import { CondensedTicket } from './components/CondensedTicket'
 import { RecipeTicket } from './components/RecipeTicket'
 import { UploadZone } from './components/UploadZone'
 import { parseBeerXML, readRecipeFile } from './lib/parseBeerXML'
 import type { Recipe } from './lib/types'
 import { useTheme } from './lib/useTheme'
+import { useViewMode } from './lib/useViewMode'
 import { useWakeLock } from './lib/useWakeLock'
 
 export default function App() {
@@ -12,6 +14,7 @@ export default function App() {
   const [errors, setErrors] = useState<string[]>([])
   const [index, setIndex] = useState(0)
   const { theme, toggleTheme } = useTheme()
+  const { view, toggleView } = useViewMode()
 
   useWakeLock(recipes !== null)
 
@@ -48,6 +51,26 @@ export default function App() {
   }
 
   const recipe = recipes[index] ?? recipes[0]!
+  const position =
+    recipes.length > 1
+      ? { index, total: recipes.length, onNext: () => setIndex((i) => (i + 1) % recipes.length) }
+      : null
+
+  // The condensed view owns the whole viewport, so the error banner would push
+  // it off screen; it stays with the detailed view where there is room to grow.
+  if (view === 'condensed') {
+    return (
+      <CondensedTicket
+        recipe={recipe}
+        onReset={reset}
+        position={position}
+        theme={theme}
+        onToggleTheme={toggleTheme}
+        view={view}
+        onToggleView={toggleView}
+      />
+    )
+  }
 
   return (
     <>
@@ -68,15 +91,9 @@ export default function App() {
         onReset={reset}
         theme={theme}
         onToggleTheme={toggleTheme}
-        position={
-          recipes.length > 1
-            ? {
-                index,
-                total: recipes.length,
-                onNext: () => setIndex((i) => (i + 1) % recipes.length),
-              }
-            : null
-        }
+        view={view}
+        onToggleView={toggleView}
+        position={position}
       />
     </>
   )

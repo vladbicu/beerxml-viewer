@@ -1,59 +1,16 @@
-import { formatDuration, formatGravity, formatNumber } from '../lib/format'
-import type { Theme } from '../lib/useTheme'
-import { Mark } from './Mark'
-import { ThemeToggle } from './ThemeToggle'
+import { fermentationLabel, readings, subtitle } from '../lib/recipeSummary'
 import { srmToRgb } from '../lib/srm'
 import type { Recipe } from '../lib/types'
+import type { Theme } from '../lib/useTheme'
+import type { ViewMode } from '../lib/useViewMode'
 import { FermentablesSection } from './FermentablesSection'
 import { HopsSection } from './HopsSection'
+import { Mark } from './Mark'
 import { MashSection } from './MashSection'
 import { MiscSection } from './MiscSection'
+import { ThemeToggle } from './ThemeToggle'
+import { ViewToggle } from './ViewToggle'
 import { YeastSection } from './YeastSection'
-
-interface Reading {
-  label: string
-  value: string
-  unit?: string
-  accent?: boolean
-}
-
-function readings(recipe: Recipe): Reading[] {
-  const list: Reading[] = []
-  const push = (label: string, value: string, unit?: string, accent?: boolean) => {
-    if (value !== '') list.push({ label, value, unit, accent })
-  }
-
-  push('OG', formatGravity(recipe.og))
-  push('FG', formatGravity(recipe.fg))
-  push('ABV', formatNumber(recipe.abv), '%', true)
-  push('IBU', formatNumber(recipe.ibu, 0), undefined, true)
-  push('SRM', formatNumber(recipe.color))
-  push('Volum', formatNumber(recipe.batchSize), 'L')
-  // boilSize is null when the source wrote 0, so it simply drops out here.
-  push('Fierbere', formatNumber(recipe.boilSize), 'L')
-  push('Timp fierbere', formatDuration(recipe.boilTime))
-  push('Eficiență', formatNumber(recipe.efficiency, 0), '%')
-  push('Calorii', formatNumber(recipe.calories, 0), 'kcal')
-
-  return list
-}
-
-function subtitle(recipe: Recipe): string {
-  const styleParts = recipe.style
-    ? [recipe.style.name, recipe.style.category, recipe.style.guide].filter(Boolean)
-    : []
-  return [...styleParts, recipe.type].filter(Boolean).join(' · ')
-}
-
-function fermentationLabel(recipe: Recipe): string {
-  const f = recipe.fermentation
-  if (!f) return ''
-  const parts: string[] = []
-  if (f.primaryAge !== null) parts.push(formatDuration(f.primaryAge * 1440))
-  if (f.primaryTemp !== null) parts.push(`${formatNumber(f.primaryTemp)} °C`)
-  if (f.stages !== null) parts.push(f.stages === 1 ? '1 etapă' : `${f.stages} etape`)
-  return parts.join(' · ')
-}
 
 interface RecipeTicketProps {
   recipe: Recipe
@@ -62,6 +19,8 @@ interface RecipeTicketProps {
   position: { index: number; total: number; onNext: () => void } | null
   theme: Theme
   onToggleTheme: () => void
+  view: ViewMode
+  onToggleView: () => void
 }
 
 export function RecipeTicket({
@@ -70,6 +29,8 @@ export function RecipeTicket({
   position,
   theme,
   onToggleTheme,
+  view,
+  onToggleView,
 }: RecipeTicketProps) {
   const stats = readings(recipe)
   const fermentation = fermentationLabel(recipe)
@@ -109,6 +70,7 @@ export function RecipeTicket({
           >
             Încarcă altă rețetă
           </button>
+          <ViewToggle view={view} onToggle={onToggleView} />
           <ThemeToggle theme={theme} onToggle={onToggleTheme} />
         </div>
       </div>
