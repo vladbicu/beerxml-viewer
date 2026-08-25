@@ -25,6 +25,11 @@
   --line: rgba(214, 178, 130, 0.14);
   --line-strong: rgba(214, 178, 130, 0.28);
 
+  /* Parse failures. Warm red rather than a signal red, so it belongs. */
+  --danger: #e8896b;
+  --danger-line: rgba(220, 90, 60, 0.4);
+  --danger-veil: rgba(220, 90, 60, 0.08);
+
   /* On oak the SRM stripe needs no well — it meets the card edge directly. */
   --stripe-well: transparent;
   --stripe-well-pad: 0px;
@@ -45,32 +50,38 @@
  * page), and the accent's speaking job passes from --copper-bright to
  * --copper-ink #9e5419, since #c9793a only reaches 3.0:1 on paper.
  *
- * Not exercised across every section — dark is the tested, intended default,
- * and this is for a second monitor or a sunlit garage, never the TV.
+ * Opt-in only, never automatic: this is for a second monitor, a printed brew
+ * sheet or a sunlit garage. On a TV across the room a full-screen warm white at
+ * brew-day brightness is a lamp pointed at you, so dark stays the default even
+ * when the operating system asks for light.
  */
-@media (prefers-color-scheme: light) {
-  :root {
-    --oak-deep: #f5eee2; /* --paper: page */
-    --oak: #fbf6ec; /* --paper-raised: the ticket, brightest thing on screen */
-    --oak-raised: #e7dcc8; /* --paper-sunk: panels sink below the page */
-    --oak-high: #ddd0ba; /* --paper-rule */
+:root[data-theme='light'] {
+  --oak-deep: #f5eee2; /* --paper: page */
+  --oak: #fbf6ec; /* --paper-raised: the ticket, brightest thing on screen */
+  --oak-raised: #e7dcc8; /* --paper-sunk: panels sink below the page */
+  --oak-high: #ddd0ba; /* --paper-rule */
 
-    --cream: #191309; /* --ink: burnt oak, not black */
-    --cream-dim: #5f5346; /* --ink-dim: 6.6:1, matches cream-dim exactly */
-    --cream-faint: #786a5b; /* --ink-faint: 4.7:1, already at the floor */
+  --cream: #191309; /* --ink: burnt oak, not black */
+  --cream-dim: #5f5346; /* --ink-dim: 6.5:1, matches cream-dim closely */
+  --cream-faint: #786a5b; /* --ink-faint: 4.5:1, already at the floor */
 
-    --copper: #c9793a; /* draws only — never text on paper */
-    --copper-bright: #9e5419; /* --copper-ink: the speaking accent on light */
+  --copper: #c9793a; /* draws only — 2.9:1 on paper, never text */
+  --copper-bright: #9e5419; /* --copper-ink: the speaking accent on light */
 
-    --line: rgba(93, 76, 48, 0.22);
-    --line-strong: rgba(93, 76, 48, 0.38);
+  --line: rgba(93, 76, 48, 0.22);
+  --line-strong: rgba(93, 76, 48, 0.38);
 
-    /* Pale beers dissolve straight onto paper, so the stripe gets seated in an
-       oak well and every SRM value from 1 to 40 reads true again. */
-    --stripe-well: #14100b;
-    --stripe-well-pad: 3px;
-    --stripe-radius: 1px;
-  }
+  /* #e8896b drops to 2.2:1 on paper, so the warm red darkens rather than
+     staying the same hue at a different lightness. */
+  --danger: #a33a1c;
+  --danger-line: rgba(163, 58, 28, 0.35);
+  --danger-veil: rgba(163, 58, 28, 0.07);
+
+  /* Pale beers dissolve straight onto paper, so the stripe gets seated in an
+     oak well and every SRM value from 1 to 40 reads true again. */
+  --stripe-well: #14100b;
+  --stripe-well-pad: 3px;
+  --stripe-radius: 1px;
 }
 
 @theme inline {
@@ -85,6 +96,9 @@
   --color-copper-bright: var(--copper-bright);
   --color-line: var(--line);
   --color-line-strong: var(--line-strong);
+  --color-danger: var(--danger);
+  --color-danger-line: var(--danger-line);
+  --color-danger-veil: var(--danger-veil);
 
   --font-display: 'Fraunces', ui-serif, Georgia, serif;
   --font-sans: 'Public Sans', ui-sans-serif, system-ui, sans-serif;

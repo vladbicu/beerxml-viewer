@@ -61,16 +61,3 @@ export function srmToRgb(srm: number | null): string {
 
   return `rgb(${mix(0)}, ${mix(1)}, ${mix(2)})`
 }
-
-/**
- * Dark beers need light text on top of their swatch, pale ones need dark.
- * Uses perceived luminance rather than a plain SRM cutoff so the two stay in
- * sync if the table above is ever retuned.
- */
-export function srmTextColor(srm: number | null): string {
-  if (srm === null || !Number.isFinite(srm)) return '#f5ede1'
-  const clamped = Math.min(40, Math.max(1, srm))
-  const [r, g, b] = SRM_TABLE[Math.round(clamped) - 1]!
-  const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255
-  return luminance > 0.55 ? '#2a1a0d' : '#f5ede1'
-}

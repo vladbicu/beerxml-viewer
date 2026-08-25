@@ -1,5 +1,7 @@
 import { formatDuration, formatGravity, formatNumber } from '../lib/format'
+import type { Theme } from '../lib/useTheme'
 import { Mark } from './Mark'
+import { ThemeToggle } from './ThemeToggle'
 import { srmToRgb } from '../lib/srm'
 import type { Recipe } from '../lib/types'
 import { FermentablesSection } from './FermentablesSection'
@@ -58,9 +60,17 @@ interface RecipeTicketProps {
   onReset: () => void
   /** Only rendered when a batch export held more than one recipe. */
   position: { index: number; total: number; onNext: () => void } | null
+  theme: Theme
+  onToggleTheme: () => void
 }
 
-export function RecipeTicket({ recipe, onReset, position }: RecipeTicketProps) {
+export function RecipeTicket({
+  recipe,
+  onReset,
+  position,
+  theme,
+  onToggleTheme,
+}: RecipeTicketProps) {
   const stats = readings(recipe)
   const fermentation = fermentationLabel(recipe)
   const beerColor = srmToRgb(recipe.color)
@@ -99,6 +109,7 @@ export function RecipeTicket({ recipe, onReset, position }: RecipeTicketProps) {
           >
             Încarcă altă rețetă
           </button>
+          <ThemeToggle theme={theme} onToggle={onToggleTheme} />
         </div>
       </div>
 

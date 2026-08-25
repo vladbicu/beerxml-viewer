@@ -23,7 +23,12 @@ interface MarkProps {
  * no beer colour is present — icon, favicon, empty state — so the SRM stripe
  * stays the only variable colour on screen.
  */
-export function Mark({ ink = '#f5ede1', fill = 'none', weight = 3.8, className }: MarkProps) {
+export function Mark({
+  ink = 'var(--cream)',
+  fill = 'none',
+  weight = 3.8,
+  className,
+}: MarkProps) {
   // Several marks can share a page, so the clip path needs a unique id.
   const clipId = useId()
 

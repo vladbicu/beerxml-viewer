@@ -1,12 +1,16 @@
 import { useRef, useState } from 'react'
+import type { Theme } from '../lib/useTheme'
 import { Mark } from './Mark'
+import { ThemeToggle } from './ThemeToggle'
 
 interface UploadZoneProps {
   onFile: (file: File) => void
   errors: string[]
+  theme: Theme
+  onToggleTheme: () => void
 }
 
-export function UploadZone({ onFile, errors }: UploadZoneProps) {
+export function UploadZone({ onFile, errors, theme, onToggleTheme }: UploadZoneProps) {
   const inputRef = useRef<HTMLInputElement>(null)
   const [dragging, setDragging] = useState(false)
 
@@ -19,6 +23,10 @@ export function UploadZone({ onFile, errors }: UploadZoneProps) {
 
   return (
     <div className="mx-auto flex min-h-screen max-w-[900px] flex-col justify-center px-6 py-16">
+      <div className="mb-5 flex justify-end">
+        <ThemeToggle theme={theme} onToggle={onToggleTheme} />
+      </div>
+
       {/* The empty kettle: the same mark, unfilled and dimmed to the faint
           tier. No arrow — the level line already points at the horizontal. */}
       <button
@@ -72,9 +80,9 @@ export function UploadZone({ onFile, errors }: UploadZoneProps) {
       {errors.length > 0 && (
         <div
           role="alert"
-          className="mt-8 rounded border border-[rgba(220,90,60,0.4)] bg-[rgba(220,90,60,0.08)] px-6 py-5"
+          className="border-danger-line bg-danger-veil mt-8 rounded border px-6 py-5"
         >
-          <p className="mb-2 text-[1.05rem] font-semibold text-[#e8896b]">
+          <p className="text-danger mb-2 text-[1.05rem] font-semibold">
             Fișierul nu a putut fi încărcat
           </p>
           <ul className="text-cream-dim space-y-1 text-[1rem]">

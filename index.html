@@ -6,6 +6,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="color-scheme" content="dark light" />
     <title>Cazan</title>
+    <!-- Applies the stored theme before first paint so a light-theme reload
+         doesn't flash dark. Key must match THEME_STORAGE_KEY in useTheme.ts. -->
+    <script>
+      try {
+        document.documentElement.dataset.theme =
+          localStorage.getItem('cazan-theme') === 'light' ? 'light' : 'dark'
+      } catch (e) {
+        document.documentElement.dataset.theme = 'dark'
+      }
+    </script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <!-- Fraunces is loaded with its SOFT and WONK axes so the wordmark can use

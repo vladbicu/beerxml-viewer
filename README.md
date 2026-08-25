@@ -55,6 +55,14 @@ acoperite de teste în `src/lib/parseBeerXML.test.ts`:
   rețete în același fișier sunt acceptate, iar una coruptă nu le anulează pe
   celelalte.
 
+## Teme
+
+Implicit **întunecată**, indiferent ce cere sistemul de operare: aplicația
+trăiește pe un TV privit de la distanță, unde un ecran plin de alb cald la
+luminozitate de brew day e o lampă îndreptată spre tine. Tema deschisă e o
+alegere explicită, din butonul de comutare, pentru monitor secundar sau garaj
+însorit — preferința se ține în `localStorage` (doar ea; rețeta tot nu persistă).
+
 ## Cast pe TV
 
 Cât timp o rețetă e afișată, aplicația ține un `screen wake lock`, ca sesiunea de

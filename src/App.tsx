@@ -3,6 +3,7 @@ import { RecipeTicket } from './components/RecipeTicket'
 import { UploadZone } from './components/UploadZone'
 import { parseBeerXML, readRecipeFile } from './lib/parseBeerXML'
 import type { Recipe } from './lib/types'
+import { useTheme } from './lib/useTheme'
 import { useWakeLock } from './lib/useWakeLock'
 
 export default function App() {
@@ -10,6 +11,7 @@ export default function App() {
   const [recipes, setRecipes] = useState<Recipe[] | null>(null)
   const [errors, setErrors] = useState<string[]>([])
   const [index, setIndex] = useState(0)
+  const { theme, toggleTheme } = useTheme()
 
   useWakeLock(recipes !== null)
 
@@ -40,7 +42,9 @@ export default function App() {
   }
 
   if (recipes === null) {
-    return <UploadZone onFile={handleFile} errors={errors} />
+    return (
+      <UploadZone onFile={handleFile} errors={errors} theme={theme} onToggleTheme={toggleTheme} />
+    )
   }
 
   const recipe = recipes[index] ?? recipes[0]!
@@ -49,8 +53,8 @@ export default function App() {
     <>
       {errors.length > 0 && (
         <div role="alert" className="mx-auto max-w-[1200px] px-4 pt-8 sm:px-8">
-          <div className="rounded border border-[rgba(220,90,60,0.4)] bg-[rgba(220,90,60,0.08)] px-6 py-4">
-            <ul className="space-y-1 text-[1rem] text-[#e8896b]">
+          <div className="border-danger-line bg-danger-veil rounded border px-6 py-4">
+            <ul className="text-danger space-y-1 text-[1rem]">
               {errors.map((error) => (
                 <li key={error}>{error}</li>
               ))}
@@ -62,6 +66,8 @@ export default function App() {
       <RecipeTicket
         recipe={recipe}
         onReset={reset}
+        theme={theme}
+        onToggleTheme={toggleTheme}
         position={
           recipes.length > 1
             ? {
