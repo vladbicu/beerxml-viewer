@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<RECIPES>
+  <RECIPE>
+    <NAME>Rose IPA</NAME>
+    <VERSION>1</VERSION>
+    <DATE>19 Jul 25</DATE>
+    <TYPE>All Grain</TYPE>
+    <BREWER>Vlad Bicu</BREWER>
+    <BATCH_SIZE>23</BATCH_SIZE>
+    <BOIL_SIZE>0</BOIL_SIZE>
+    <BOIL_TIME>60</BOIL_TIME>
+    <EFFICIENCY>72</EFFICIENCY>
+    <EST_OG>1.036</EST_OG>
+    <EST_FG>1.005</EST_FG>
+    <IBU>18</IBU>
+    <EST_ABV>4.1</EST_ABV>
+    <CALORIES>117</CALORIES>
+    <EST_COLOR>4.2019307372315</EST_COLOR>
+    <NOTES/>
+    <IBU_METHOD>Tinseth</IBU_METHOD>
+    <STYLE>
+      <NAME>Specialty IPA</NAME>
+      <VERSION>1</VERSION>
+      <CATEGORY_NUMBER>21</CATEGORY_NUMBER>
+      <STYLE_LETTER>B</STYLE_LETTER>
+      <STYLE_GUIDE>BJCP</STYLE_GUIDE>
+      <TYPE>Ale</TYPE>
+      <OG_MIN>0.995</OG_MIN>
+      <OG_MAX>1.12</OG_MAX>
+      <FG_MIN>0.995</FG_MIN>
+      <FG_MAX>1.12</FG_MAX>
+      <IBU_MIN>0</IBU_MIN>
+      <IBU_MAX>120</IBU_MAX>
+      <COLOR_MIN>0</COLOR_MIN>
+      <COLOR_MAX>40</COLOR_MAX>
+    </STYLE>
+    <WATERS/>
+    <FERMENTABLES>
+      <FERMENTABLE>
+        <NAME>Pilsner</NAME>
+        <VERSION>1</VERSION>
+        <TYPE>Grain</TYPE>
+        <AMOUNT>2.5</AMOUNT>
+        <YIELD>81.849223179123</YIELD>
+        <COLOR>1.7</COLOR>
+      </FERMENTABLE>
+      <FERMENTABLE>
+        <NAME>Munich I</NAME>
+        <VERSION>1</VERSION>
+        <TYPE>Grain</TYPE>
+        <AMOUNT>0.7</AMOUNT>
+        <YIELD>81.849223179123</YIELD>
+        <COLOR>5.81</COLOR>
+      </FERMENTABLE>
+      <FERMENTABLE>
+        <NAME>Barley, Flaked</NAME>
+        <VERSION>1</VERSION>
+        <TYPE>Grain</TYPE>
+        <AMOUNT>0.35</AMOUNT>
+        <YIELD>69.675855801272</YIELD>
+        <COLOR>1.7</COLOR>
+      </FERMENTABLE>
+      <FERMENTABLE>
+        <NAME>Oats, Flaked</NAME>
+        <VERSION>1</VERSION>
+        <TYPE>Grain</TYPE>
+        <AMOUNT>0.35</AMOUNT>
+        <YIELD>79.629549487168</YIELD>
+        <COLOR>1</COLOR>
+      </FERMENTABLE>
+      <FERMENTABLE>
+        <NAME>Carahell</NAME>
+        <VERSION>1</VERSION>
+        <TYPE>Grain</TYPE>
+        <AMOUNT>0.1</AMOUNT>
+        <YIELD>75.389275976977</YIELD>
+        <COLOR>10.17</COLOR>
+      </FERMENTABLE>
+      <FERMENTABLE>
+        <NAME>Caramunich III</NAME>
+        <VERSION>1</VERSION>
+        <TYPE>Grain</TYPE>
+        <AMOUNT>0.06</AMOUNT>
+        <YIELD>79.69922534297</YIELD>
+        <COLOR>53.02</COLOR>
+      </FERMENTABLE>
+    </FERMENTABLES>
+    <HOPS>
+      <HOP>
+        <NAME>Cascade</NAME>
+        <VERSION>1</VERSION>
+        <ALPHA>5.5</ALPHA>
+        <AMOUNT>0.01</AMOUNT>
+        <USE>Boil</USE>
+        <TIME>30</TIME>
+        <FORM>Pellet</FORM>
+      </HOP>
+      <HOP>
+        <NAME>El Dorado</NAME>
+        <VERSION>1</VERSION>
+        <ALPHA>11.6</ALPHA>
+        <AMOUNT>0.01</AMOUNT>
+        <USE>Boil</USE>
+        <TIME>10</TIME>
+        <FORM>Pellet</FORM>
+      </HOP>
+      <HOP>
+        <NAME>Cascade</NAME>
+        <VERSION>1</VERSION>
+        <ALPHA>5.5</ALPHA>
+        <AMOUNT>0.015</AMOUNT>
+        <USE>Hop Stand</USE>
+        <TIME>20</TIME>
+        <FORM>Pellet</FORM>
+        <TEMPERATURE>90</TEMPERATURE>
+        <HOP_TEMP>90</HOP_TEMP>
+      </HOP>
+      <HOP>
+        <NAME>Motueka</NAME>
+        <VERSION>1</VERSION>
+        <ALPHA>7</ALPHA>
+        <AMOUNT>0.015</AMOUNT>
+        <USE>Hop Stand</USE>
+        <TIME>20</TIME>
+        <FORM>Pellet</FORM>
+        <TEMPERATURE>90</TEMPERATURE>
+        <HOP_TEMP>90</HOP_TEMP>
+      </HOP>
+      <HOP>
+        <NAME>Motueka</NAME>
+        <VERSION>1</VERSION>
+        <ALPHA>7</ALPHA>
+        <AMOUNT>0.02</AMOUNT>
+        <USE>Dry Hop</USE>
+        <TIME>4320</TIME>
+        <FORM>Pellet</FORM>
+      </HOP>
+      <HOP>
+        <NAME>El Dorado</NAME>
+        <VERSION>1</VERSION>
+        <ALPHA>11.6</ALPHA>
+        <AMOUNT>0.02</AMOUNT>
+        <USE>Dry Hop</USE>
+        <TIME>4320</TIME>
+        <FORM>Pellet</FORM>
+      </HOP>
+      <HOP>
+        <NAME>Cascade</NAME>
+        <VERSION>1</VERSION>
+        <ALPHA>5.5</ALPHA>
+        <AMOUNT>0.015</AMOUNT>
+        <USE>Dry Hop</USE>
+        <TIME>4320</TIME>
+        <FORM>Pellet</FORM>
+      </HOP>
+    </HOPS>
+    <YEASTS>
+      <YEAST>
+        <NAME>Lallemand (LalBrew) Wit Belgian</NAME>
+        <VERSION>1</VERSION>
+        <TYPE/>
+        <FORM>Other</FORM>
+        <AMOUNT>2</AMOUNT>
+        <AMOUNT_IS_WEIGHT>false</AMOUNT_IS_WEIGHT>
+        <ATTENUATION>80</ATTENUATION>
+        <LABORATORY/>
+        <PRODUCT_ID/>
+      </YEAST>
+    </YEASTS>
+    <MISCS>
+      <MISC>
+        <NAME>Hibiscus</NAME>
+        <VERSION>1</VERSION>
+        <AMOUNT>0.025</AMOUNT>
+        <DISPLAY_AMOUNT>25 g</DISPLAY_AMOUNT>
+        <AMOUNT_IS_WEIGHT>true</AMOUNT_IS_WEIGHT>
+        <TIME>10</TIME>
+        <TYPE>Other</TYPE>
+        <USE>Boil</USE>
+      </MISC>
+      <MISC>
+        <NAME>Irish Moss</NAME>
+        <VERSION>1</VERSION>
+        <AMOUNT>0.01</AMOUNT>
+        <DISPLAY_AMOUNT>10 g</DISPLAY_AMOUNT>
+        <AMOUNT_IS_WEIGHT>true</AMOUNT_IS_WEIGHT>
+        <TIME>10</TIME>
+        <TYPE>Other</TYPE>
+        <USE>Boil</USE>
+      </MISC>
+      <MISC>
+        <NAME>Rose petals</NAME>
+        <VERSION>1</VERSION>
+        <AMOUNT>0.05</AMOUNT>
+        <DISPLAY_AMOUNT>50 g</DISPLAY_AMOUNT>
+        <AMOUNT_IS_WEIGHT>true</AMOUNT_IS_WEIGHT>
+        <TIME>4320</TIME>
+        <TYPE>Other</TYPE>
+        <USE>Secondary</USE>
+      </MISC>
+    </MISCS>
+    <MASH>
+      <MASH_STEPS>
+        <MASH_STEP>
+          <NAME>Temperature</NAME>
+          <VERSION>1</VERSION>
+          <TYPE>Temperature</TYPE>
+          <STEP_TIME>75</STEP_TIME>
+          <STEP_TEMP>65</STEP_TEMP>
+          <RAMP_TIME>0</RAMP_TIME>
+          <END_TEMP>65</END_TEMP>
+        </MASH_STEP>
+      </MASH_STEPS>
+    </MASH>
+    <FERMENTATION_STAGES>1</FERMENTATION_STAGES>
+    <PRIMARY_AGE>14</PRIMARY_AGE>
+    <PRIMARY_TEMP>20</PRIMARY_TEMP>
+  </RECIPE>
+</RECIPES>

@@ -1,0 +1,146 @@
+@import 'tailwindcss';
+
+:root {
+  /* Surfaces — warm near-black, burnt oak rather than neutral grey */
+  --oak-deep: #0d0907;
+  --oak: #14100b;
+  --oak-raised: #1e1810;
+  --oak-high: #2a2118;
+
+  /* Ink */
+  --cream: #f5ede1;
+  --cream-dim: #a2937e;
+  --cream-faint: #6d6153;
+
+  /* Accent */
+  --copper: #c9793a;
+  --copper-bright: #e2a262;
+
+  --line: rgba(214, 178, 130, 0.14);
+  --line-strong: rgba(214, 178, 130, 0.28);
+
+  /* Read from 2-3 m away: the whole scale is anchored well above the 16px web
+     default, since this is viewed from a couch, not a laptop. */
+  --text-base: 20px;
+}
+
+@theme inline {
+  --color-oak-deep: var(--oak-deep);
+  --color-oak: var(--oak);
+  --color-oak-raised: var(--oak-raised);
+  --color-oak-high: var(--oak-high);
+  --color-cream: var(--cream);
+  --color-cream-dim: var(--cream-dim);
+  --color-cream-faint: var(--cream-faint);
+  --color-copper: var(--copper);
+  --color-copper-bright: var(--copper-bright);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+
+  --font-display: 'Fraunces', ui-serif, Georgia, serif;
+  --font-sans: 'Public Sans', ui-sans-serif, system-ui, sans-serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, monospace;
+}
+
+html {
+  font-size: var(--text-base);
+  background-color: var(--oak-deep);
+}
+
+body {
+  margin: 0;
+  background-color: var(--oak-deep);
+  color: var(--cream);
+  font-family: var(--font-sans);
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* No mouse on a TV: every interactive element must show where focus is. */
+:focus-visible {
+  outline: 3px solid var(--copper-bright);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+@layer components {
+  /* The headline readings — OG/FG/ABV/IBU — sized to carry across a room. */
+  .stat-value {
+    font-family: var(--font-mono);
+    font-size: clamp(2.25rem, 4vw, 3.75rem);
+    font-weight: 500;
+    line-height: 1;
+    letter-spacing: -0.02em;
+    color: var(--cream);
+  }
+
+  .stat-unit {
+    font-family: var(--font-mono);
+    font-size: 0.45em;
+    color: var(--cream-dim);
+    margin-left: 0.15em;
+  }
+
+  .stat-label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    color: var(--cream-faint);
+  }
+
+  .section-title {
+    font-family: var(--font-display);
+    font-size: clamp(1.6rem, 2.2vw, 2.1rem);
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    color: var(--cream);
+  }
+
+  .eyebrow {
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    color: var(--copper);
+  }
+
+  /* Tables stay large: a grain bill read at a glance from across the brewery. */
+  .data-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 1.05rem;
+  }
+
+  .data-table th {
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: var(--cream-faint);
+    text-align: left;
+    padding: 0 0 0.6rem;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .data-table td {
+    padding: 0.7rem 0;
+    border-bottom: 1px solid var(--line);
+    vertical-align: middle;
+  }
+
+  .data-table tr:last-child td {
+    border-bottom: none;
+  }
+
+  .num {
+    font-family: var(--font-mono);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .panel {
+    background-color: var(--oak-raised);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+  }
+}
