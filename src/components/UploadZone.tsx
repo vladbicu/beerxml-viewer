@@ -22,8 +22,10 @@ export function UploadZone({ onFile, errors, theme, onToggleTheme }: UploadZoneP
   }
 
   return (
-    <div className="mx-auto flex min-h-screen max-w-[900px] flex-col justify-center px-6 py-16">
-      <div className="mb-5 flex justify-end">
+    <div className="relative mx-auto flex min-h-[100dvh] max-w-[900px] flex-col justify-center px-6 py-[clamp(1rem,4vh,3rem)]">
+      {/* Out of the flow, so the kettle centres on the true viewport centre
+          rather than being pushed down by a header row. */}
+      <div className="absolute top-4 right-4">
         <ThemeToggle theme={theme} onToggle={onToggleTheme} />
       </div>
 
@@ -38,16 +40,16 @@ export function UploadZone({ onFile, errors, theme, onToggleTheme }: UploadZoneP
         }}
         onDragLeave={() => setDragging(false)}
         onDrop={handleDrop}
-        className={`bg-oak border-line flex w-full cursor-pointer flex-col items-center gap-11 rounded border px-8 py-24 text-center transition-colors ${
+        className={`bg-oak border-line flex w-full cursor-pointer flex-col items-center gap-[clamp(1rem,3.5vh,2.75rem)] rounded border px-8 py-[clamp(1.75rem,7vh,5rem)] text-center transition-colors ${
           dragging ? 'border-copper-bright bg-oak-raised' : ''
         }`}
       >
-        <span className="h-[132px] w-[132px] opacity-55">
+        <span className="h-[clamp(64px,14vh,132px)] w-[clamp(64px,14vh,132px)] opacity-55">
           <Mark ink={dragging ? 'var(--copper-bright)' : 'var(--cream-faint)'} fill="none" />
         </span>
 
         <span className="flex flex-col items-center gap-3">
-          <span className="display-title text-[clamp(2rem,4vw,2.75rem)] leading-tight">
+          <span className="display-title text-[clamp(1.5rem,4vh,2.75rem)] leading-tight">
             Cazanul e gol
           </span>
           <span className="text-cream-dim text-[1.15rem]">Trage un fișier BeerXML aici</span>
@@ -73,14 +75,14 @@ export function UploadZone({ onFile, errors, theme, onToggleTheme }: UploadZoneP
         }}
       />
 
-      <p className="text-cream-faint mt-8 text-center text-[0.95rem]">
+      <p className="text-cream-faint mt-[clamp(1rem,3vh,2rem)] text-center text-[0.95rem]">
         Totul rămâne în browser — nimic nu se trimite nicăieri.
       </p>
 
       {errors.length > 0 && (
         <div
           role="alert"
-          className="border-danger-line bg-danger-veil mt-8 rounded border px-6 py-5"
+          className="border-danger-line bg-danger-veil mt-[clamp(1rem,3vh,2rem)] rounded border px-6 py-5"
         >
           <p className="text-danger mb-2 text-[1.05rem] font-semibold">
             Fișierul nu a putut fi încărcat
