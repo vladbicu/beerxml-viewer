@@ -18,8 +18,13 @@ router). Drop in several BeerXML files and it keeps them as a **tap list**: one
 row per beer with a large colour square (exact SRM · EBC printed under it), the
 board figures — ABV, IBU, OG→FG — and, to educate the drinker, the hop varieties
 and yeast strain. The whole board scales to a single screen like the condensed
-recipe view. Rows reorder by drag, a row is removed with its `×`, and "Golește"
-empties the board.
+recipe view.
+
+The bar has a fixed number of taps (set in the header, default 3). The first N
+beers on the ordered list are **La robinet**, numbered by tap position; the rest
+sit below under **Gata de pus la robinet**; any tap with no beer shows as
+**Liber**. Dragging a beer across the divider is how it goes on or comes off tap.
+A row is removed with its `×`, and "Golește" empties the board.
 
 Unlike the viewer, the tap list **persists** — in `localStorage` under
 `cazan-taplist` — because a curated board is only useful if it stays put. It is

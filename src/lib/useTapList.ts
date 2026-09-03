@@ -1,12 +1,29 @@
 import { useCallback, useEffect, useState } from 'react'
 import { parseBeerXML, readRecipeFile } from './parseBeerXML'
-import { moveTap, parseStoredTaps, type Tap, TAPLIST_STORAGE_KEY, tapsFromRecipes } from './tapList'
+import {
+  clampTapCount,
+  moveTap,
+  parseStoredTaps,
+  parseTapCount,
+  type Tap,
+  TAP_COUNT_STORAGE_KEY,
+  TAPLIST_STORAGE_KEY,
+  tapsFromRecipes,
+} from './tapList'
 
 function readStored(): Tap[] {
   try {
     return parseStoredTaps(localStorage.getItem(TAPLIST_STORAGE_KEY))
   } catch {
     return []
+  }
+}
+
+function readStoredCount(): number {
+  try {
+    return parseTapCount(localStorage.getItem(TAP_COUNT_STORAGE_KEY))
+  } catch {
+    return parseTapCount(null)
   }
 }
 
@@ -20,6 +37,9 @@ function newId(): string {
 
 export interface UseTapList {
   taps: Tap[]
+  /** Number of physical taps; the first `tapCount` beers on the board are live. */
+  tapCount: number
+  setTapCount: (value: number) => void
   /** Parse failures from the most recent `addFiles`; cleared on the next call. */
   errors: string[]
   addFiles: (files: File[]) => Promise<void>
@@ -36,6 +56,7 @@ export interface UseTapList {
  */
 export function useTapList(): UseTapList {
   const [taps, setTaps] = useState<Tap[]>(readStored)
+  const [tapCount, setTapCountState] = useState<number>(readStoredCount)
   const [errors, setErrors] = useState<string[]>([])
 
   useEffect(() => {
@@ -45,6 +66,18 @@ export function useTapList(): UseTapList {
       // Private mode or a full quota — the board just won't survive the reload.
     }
   }, [taps])
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(TAP_COUNT_STORAGE_KEY, String(tapCount))
+    } catch {
+      // Preference just won't survive the reload; not worth surfacing.
+    }
+  }, [tapCount])
+
+  const setTapCount = useCallback((value: number) => {
+    setTapCountState(clampTapCount(value))
+  }, [])
 
   const addFiles = useCallback(async (files: File[]) => {
     const added: Tap[] = []
@@ -77,5 +110,5 @@ export function useTapList(): UseTapList {
     setErrors([])
   }, [])
 
-  return { taps, errors, addFiles, remove, move, clear }
+  return { taps, tapCount, setTapCount, errors, addFiles, remove, move, clear }
 }

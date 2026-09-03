@@ -11,7 +11,7 @@ import { useWakeLock } from './lib/useWakeLock'
  */
 export function TapList() {
   const { theme, toggleTheme } = useTheme()
-  const { taps, errors, addFiles, remove, move, clear } = useTapList()
+  const { taps, tapCount, setTapCount, errors, addFiles, remove, move, clear } = useTapList()
 
   // A TV behind the bar shouldn't dim mid-service.
   useWakeLock(taps.length > 0)
@@ -25,6 +25,8 @@ export function TapList() {
   return (
     <TapBoard
       taps={taps}
+      tapCount={tapCount}
+      onTapCountChange={setTapCount}
       errors={errors}
       onAdd={addFiles}
       onRemove={remove}

@@ -16,6 +16,23 @@ export interface Tap {
 /** Shared with the pre-paint-free tap page; unlike the viewer, this one persists. */
 export const TAPLIST_STORAGE_KEY = 'cazan-taplist'
 
+/** How many physical taps the bar has. The first N beers on the board are live. */
+export const TAP_COUNT_STORAGE_KEY = 'cazan-tap-count'
+export const DEFAULT_TAP_COUNT = 3
+export const MAX_TAP_COUNT = 12
+
+/** Clamps a stored / typed tap count to a sane range, falling back to the default. */
+export function clampTapCount(value: number): number {
+  if (!Number.isFinite(value)) return DEFAULT_TAP_COUNT
+  return Math.min(MAX_TAP_COUNT, Math.max(1, Math.round(value)))
+}
+
+export function parseTapCount(raw: string | null): number {
+  if (raw === null || raw.trim() === '') return DEFAULT_TAP_COUNT
+  const n = Number(raw)
+  return Number.isFinite(n) ? clampTapCount(n) : DEFAULT_TAP_COUNT
+}
+
 /**
  * Wraps each parsed recipe in a Tap. Duplicates are allowed — a board with the
  * same beer twice is the user's call, cleared with the per-row remove button.

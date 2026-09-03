@@ -84,10 +84,12 @@ const taps: Tap[] = [
   { id: 'b', recipe: { ...hopHeavy, name: 'NEIPA test' }, addedAt: 0 },
 ]
 
-const renderBoard = () =>
+const renderBoard = (tapCount = 3) =>
   renderToStaticMarkup(
     createElement(TapBoard, {
       taps,
+      tapCount,
+      onTapCountChange: () => {},
       errors: [],
       onAdd: () => {},
       onRemove: () => {},
@@ -126,6 +128,19 @@ it('the tap board cannot scroll', () => {
   expect(html).toContain('overflow-hidden')
   expect(html).not.toContain('overflow-auto')
   expect(html).not.toContain('overflow-y-auto')
+})
+
+it('splits the board into live taps and a ready queue', () => {
+  const text = strip(renderBoard(1)) // 2 beers, 1 tap
+  expect(text).toContain('La robinet')
+  expect(text).toContain('Gata de pus la robinet')
+  expect(text).not.toContain('Liber')
+})
+
+it('shows a free slot for every tap without a beer', () => {
+  const text = strip(renderBoard(4)) // 2 beers, 4 taps
+  expect(text).toContain('Liber')
+  expect(text).not.toContain('Gata de pus la robinet')
 })
 
 it('two dry hop charges stay separate blocks in both views', () => {

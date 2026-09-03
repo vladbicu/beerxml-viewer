@@ -1,5 +1,12 @@
 import { expect, it } from 'vitest'
-import { moveTap, parseStoredTaps, type Tap, tapsFromRecipes } from './tapList'
+import {
+  clampTapCount,
+  moveTap,
+  parseStoredTaps,
+  parseTapCount,
+  type Tap,
+  tapsFromRecipes,
+} from './tapList'
 import type { Recipe } from './types'
 
 const recipe = (name: string): Recipe =>
@@ -66,6 +73,18 @@ it('parseStoredTaps returns an empty board for anything malformed', () => {
   expect(parseStoredTaps('{"not":"an array"}')).toEqual([])
   expect(parseStoredTaps('[{"id":"a"}]')).toEqual([])
   expect(parseStoredTaps('[{"id":1,"addedAt":0,"recipe":{"name":"x"}}]')).toEqual([])
+})
+
+it('tap count falls back to 3 and stays within 1..12', () => {
+  expect(parseTapCount(null)).toBe(3)
+  expect(parseTapCount('')).toBe(3)
+  expect(parseTapCount('abc')).toBe(3)
+  expect(parseTapCount('5')).toBe(5)
+  expect(parseTapCount('0')).toBe(1)
+  expect(parseTapCount('999')).toBe(12)
+  expect(clampTapCount(2.6)).toBe(3)
+  expect(clampTapCount(-4)).toBe(1)
+  expect(clampTapCount(Number.NaN)).toBe(3)
 })
 
 it('parseStoredTaps drops only the bad entries', () => {
