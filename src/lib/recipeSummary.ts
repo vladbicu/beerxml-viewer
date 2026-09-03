@@ -42,6 +42,30 @@ export function subtitle(recipe: Recipe): string {
   return [...styleParts, recipe.type].filter(Boolean).join(' · ')
 }
 
+/** Unique hop varieties in first-seen order — the "what will I taste" line. */
+export function hopNames(recipe: Recipe): string[] {
+  const seen = new Set<string>()
+  for (const hop of recipe.hops) {
+    const name = hop.name.trim()
+    if (name) seen.add(name)
+  }
+  return [...seen]
+}
+
+/**
+ * Yeast strains for display, prefixed with the lab when the name doesn't already
+ * carry it ("London ESB" -> "Wyeast London ESB", but "Lallemand …" is left be).
+ */
+export function yeastNames(recipe: Recipe): string[] {
+  return recipe.yeasts
+    .map((yeast) => {
+      const name = yeast.name.trim()
+      const lab = yeast.laboratory.trim()
+      return lab && !name.toLowerCase().includes(lab.toLowerCase()) ? `${lab} ${name}` : name
+    })
+    .filter(Boolean)
+}
+
 export function fermentationLabel(recipe: Recipe): string {
   const f = recipe.fermentation
   if (!f) return ''

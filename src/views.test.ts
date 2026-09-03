@@ -5,7 +5,9 @@ import { renderToStaticMarkup } from 'react-dom/server'
 import { expect, it } from 'vitest'
 import { CondensedTicket } from './components/CondensedTicket'
 import { RecipeTicket } from './components/RecipeTicket'
+import { TapBoard } from './components/TapBoard'
 import { parseBeerXML } from './lib/parseBeerXML'
+import type { Tap } from './lib/tapList'
 import type { Hop, Recipe } from './lib/types'
 
 const fixture = parseBeerXML(
@@ -74,6 +76,55 @@ it('condensed cannot scroll', () => {
   expect(html).toContain('overflow-hidden')
   expect(html).not.toContain('overflow-auto')
   expect(html).not.toContain('overflow-x-auto')
+  expect(html).not.toContain('overflow-y-auto')
+})
+
+const taps: Tap[] = [
+  { id: 'a', recipe: { ...fixture, name: 'Rose IPA' }, addedAt: 0 },
+  { id: 'b', recipe: { ...hopHeavy, name: 'NEIPA test' }, addedAt: 0 },
+]
+
+const renderBoard = () =>
+  renderToStaticMarkup(
+    createElement(TapBoard, {
+      taps,
+      errors: [],
+      onAdd: () => {},
+      onRemove: () => {},
+      onMove: () => {},
+      onClear: () => {},
+      theme: 'dark' as const,
+      onToggleTheme: () => {},
+    }),
+  )
+
+it('the tap board shows every beer and its headline stats', () => {
+  const html = renderBoard()
+  const text = strip(html)
+  for (const t of taps) expect(text).toContain(t.recipe.name)
+  // The fixture's headline figures land on the board.
+  expect(text).toContain('4.1') // ABV
+  expect(text).toContain('1.036→1.005') // OG → FG
+  expect(text).toContain('ABV')
+  expect(text).toContain('IBU')
+})
+
+it('the tap board educates: hops, yeast, and the exact SRM/EBC colour', () => {
+  const text = strip(renderBoard())
+  // Hop varieties, de-duplicated (fixture lists Cascade three times).
+  expect(text).toContain('Hamei')
+  expect(text).toContain('Cascade · El Dorado · Motueka')
+  // Yeast strain.
+  expect(text).toContain('Drojdie')
+  expect(text).toContain('Lallemand (LalBrew) Wit Belgian')
+  // Exact colour on both scales.
+  expect(text).toContain('SRM 4.2 · EBC 8')
+})
+
+it('the tap board cannot scroll', () => {
+  const html = renderBoard()
+  expect(html).toContain('overflow-hidden')
+  expect(html).not.toContain('overflow-auto')
   expect(html).not.toContain('overflow-y-auto')
 })
 

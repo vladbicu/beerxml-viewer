@@ -46,6 +46,11 @@ const SRM_TABLE: readonly [number, number, number][] = [
   [54, 8, 10], // 40
 ]
 
+/** EBC is the European scale for the same thing: EBC ≈ 1.97 × SRM. */
+export function srmToEbc(srm: number | null): number | null {
+  return srm === null || !Number.isFinite(srm) ? null : srm * 1.97
+}
+
 /** Returns a CSS rgb() string for an SRM value, clamped to the 1-40 table. */
 export function srmToRgb(srm: number | null): string {
   if (srm === null || !Number.isFinite(srm)) return 'rgb(120, 120, 120)'

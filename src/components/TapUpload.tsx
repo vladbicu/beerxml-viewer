@@ -3,37 +3,72 @@ import type { Theme } from '../lib/useTheme'
 import { Mark } from './Mark'
 import { ThemeToggle } from './ThemeToggle'
 
-interface UploadZoneProps {
-  onFile: (file: File) => void
-  errors: string[]
-  theme: Theme
-  onToggleTheme: () => void
+const ACCEPT = '.xml,text/xml,application/xml'
+
+interface TapUploadProps {
+  onFiles: (files: File[]) => void
+  /** Full-screen empty state when true; a lone "+ Adaugă" button when false. */
+  full?: boolean
+  errors?: string[]
+  theme?: Theme
+  onToggleTheme?: () => void
 }
 
-export function UploadZone({ onFile, errors, theme, onToggleTheme }: UploadZoneProps) {
+export function TapUpload({ onFiles, full, errors = [], theme, onToggleTheme }: TapUploadProps) {
   const inputRef = useRef<HTMLInputElement>(null)
   const [dragging, setDragging] = useState(false)
+
+  const pick = () => inputRef.current?.click()
+
+  const input = (
+    <input
+      ref={inputRef}
+      type="file"
+      multiple
+      accept={ACCEPT}
+      className="hidden"
+      onChange={(e) => {
+        const files = Array.from(e.target.files ?? [])
+        if (files.length > 0) onFiles(files)
+        // Reset so re-picking the same file still fires onChange.
+        e.target.value = ''
+      }}
+    />
+  )
+
+  if (!full) {
+    return (
+      <>
+        <button
+          type="button"
+          onClick={pick}
+          className="border-line-strong text-cream-dim cursor-pointer rounded border px-4 py-2 text-[0.9rem] font-medium"
+        >
+          + Adaugă
+        </button>
+        {input}
+      </>
+    )
+  }
 
   const handleDrop = (event: React.DragEvent) => {
     event.preventDefault()
     setDragging(false)
-    const file = event.dataTransfer.files[0]
-    if (file) onFile(file)
+    const files = Array.from(event.dataTransfer.files)
+    if (files.length > 0) onFiles(files)
   }
 
   return (
     <div className="relative mx-auto flex min-h-[100dvh] max-w-[900px] flex-col justify-center px-6 py-[clamp(1rem,4vh,3rem)]">
-      {/* Out of the flow, so the kettle centres on the true viewport centre
-          rather than being pushed down by a header row. */}
-      <div className="absolute top-4 right-4">
-        <ThemeToggle theme={theme} onToggle={onToggleTheme} />
-      </div>
+      {theme && onToggleTheme && (
+        <div className="absolute top-4 right-4">
+          <ThemeToggle theme={theme} onToggle={onToggleTheme} />
+        </div>
+      )}
 
-      {/* The empty kettle: the same mark, unfilled and dimmed to the faint
-          tier. No arrow — the level line already points at the horizontal. */}
       <button
         type="button"
-        onClick={() => inputRef.current?.click()}
+        onClick={pick}
         onDragOver={(e) => {
           e.preventDefault()
           setDragging(true)
@@ -50,9 +85,11 @@ export function UploadZone({ onFile, errors, theme, onToggleTheme }: UploadZoneP
 
         <span className="flex flex-col items-center gap-3">
           <span className="display-title text-[clamp(1.5rem,4vh,2.75rem)] leading-tight">
-            Cazanul e gol
+            Niciun robinet încă
           </span>
-          <span className="text-cream-dim text-[1.15rem]">Trage un fișier BeerXML aici</span>
+          <span className="text-cream-dim text-[1.15rem]">
+            Trage aici fișiere BeerXML — câte vrei
+          </span>
         </span>
 
         <span className="bg-line-strong h-px w-[180px]" />
@@ -62,23 +99,12 @@ export function UploadZone({ onFile, errors, theme, onToggleTheme }: UploadZoneP
         </span>
       </button>
 
-      <input
-        ref={inputRef}
-        type="file"
-        accept=".xml,text/xml,application/xml"
-        className="hidden"
-        onChange={(e) => {
-          const file = e.target.files?.[0]
-          if (file) onFile(file)
-          // Reset so picking the same file twice in a row still fires onChange.
-          e.target.value = ''
-        }}
-      />
+      {input}
 
       <p className="text-cream-faint mt-[clamp(1rem,3vh,2rem)] text-center text-[0.95rem]">
-        Totul rămâne în browser — nimic nu se trimite nicăieri.{' '}
-        <a href="/robinete.html" className="text-copper-bright underline-offset-2 hover:underline">
-          Vezi robinetele →
+        Robinetele rămân salvate în acest browser.{' '}
+        <a href="/index.html" className="text-copper-bright underline-offset-2 hover:underline">
+          Deschide o rețetă →
         </a>
       </p>
 
@@ -88,7 +114,7 @@ export function UploadZone({ onFile, errors, theme, onToggleTheme }: UploadZoneP
           className="border-danger-line bg-danger-veil mt-[clamp(1rem,3vh,2rem)] rounded border px-6 py-5"
         >
           <p className="text-danger mb-2 text-[1.05rem] font-semibold">
-            Fișierul nu a putut fi încărcat
+            Unele fișiere nu au putut fi citite
           </p>
           <ul className="text-cream-dim space-y-1 text-[1rem]">
             {errors.map((error) => (

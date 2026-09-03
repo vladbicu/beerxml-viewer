@@ -11,6 +11,21 @@ Everything runs client-side: no backend, no database, no upload. Nothing
 persists across a refresh — deliberately, this is a viewer for brew day, not a
 recipe library.
 
+## Tap list
+
+`robinete.html` is a second, separate page (its own Vite entry — there is no
+router). Drop in several BeerXML files and it keeps them as a **tap list**: one
+row per beer with a large colour square (exact SRM · EBC printed under it), the
+board figures — ABV, IBU, OG→FG — and, to educate the drinker, the hop varieties
+and yeast strain. The whole board scales to a single screen like the condensed
+recipe view. Rows reorder by drag, a row is removed with its `×`, and "Golește"
+empties the board.
+
+Unlike the viewer, the tap list **persists** — in `localStorage` under
+`cazan-taplist` — because a curated board is only useful if it stays put. It is
+still only the browser's own storage; nothing leaves the machine. The theme
+choice is shared with the viewer.
+
 ## Commands
 
 ```bash
@@ -28,7 +43,8 @@ src/lib/parseBeerXML.ts   parsing + normalisation + decoding by encoding
 src/lib/types.ts          the data model
 src/lib/srm.ts            SRM → colour
 src/lib/format.ts         masses, durations, gravities
-src/components/           UploadZone, RecipeTicket + sections
+src/lib/tapList.ts        tap-list model + storage (pure, tested)
+src/components/           UploadZone, RecipeTicket + sections, TapBoard, TapUpload
 fixtures/                 a real export used as a test fixture
 ```
 
