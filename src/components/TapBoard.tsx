@@ -291,7 +291,7 @@ export function TapBoard({
         </div>
       )}
 
-      <div ref={containerRef} className="min-h-0 flex-1 px-6 pb-5">
+      <div ref={containerRef} className="min-h-0 flex-1 px-[10%] pb-5">
         <div
           ref={contentRef}
           style={{ transform: `scale(${scale})`, transformOrigin: 'top center' }}
